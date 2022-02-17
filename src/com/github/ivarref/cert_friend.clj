@@ -26,9 +26,11 @@
           (str (named-cert "ROOT" (.certificatePem rootCertificate))
                (named-cert "SELF" (.certificatePem serverCertificate))
                (.privateKeyPkcs8Pem serverCertificate)))
+    (println "Wrote server.keys")
 
     (spit "client.keys"
           (str (named-cert "ROOT" (.certificatePem rootCertificate))
                (named-cert "SELF" (.certificatePem client))
-               (.privateKeyPkcs8Pem client)))))
+               (.privateKeyPkcs8Pem client)))
+    (println "Wrote client.keys")))
 
