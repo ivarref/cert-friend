@@ -1,12 +1,6 @@
 (ns com.github.ivarref.cert-friend
-  (:require [clojure.string :as str])
   (:import (java.util.concurrent TimeUnit)
            (okhttp3.tls HeldCertificate HeldCertificate$Builder)))
-
-(defn named-cert [nam cert-str]
-  (-> cert-str
-      (str/replace "-----BEGIN CERTIFICATE-----" (str "-----BEGIN " nam " CERTIFICATE-----"))
-      (str/replace "-----END CERTIFICATE-----" (str "-----END " nam " CERTIFICATE-----"))))
 
 (defn write-certs [{:keys [duration]
                     :or   {duration 365}}]
@@ -23,14 +17,13 @@
                                     (.duration duration TimeUnit/DAYS)
                                     (.build))]
     (spit "server.keys"
-          (str (named-cert "ROOT" (.certificatePem rootCertificate))
-               (named-cert "SELF" (.certificatePem serverCertificate))
+          (str (.certificatePem rootCertificate)
+               (.certificatePem serverCertificate)
                (.privateKeyPkcs8Pem serverCertificate)))
     (println "Wrote server.keys")
 
     (spit "client.keys"
-          (str (named-cert "ROOT" (.certificatePem rootCertificate))
-               (named-cert "SELF" (.certificatePem client))
+          (str (.certificatePem rootCertificate)
+               (.certificatePem client)
                (.privateKeyPkcs8Pem client)))
     (println "Wrote client.keys")))
-
